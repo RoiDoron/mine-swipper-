@@ -1,13 +1,14 @@
 'use strict'
 
 const EMPTY = ' '
-const MINE = '💣'
+const MINE = 'MINE'
 
 const MINE_IMG = '<img src="image/images.png"></img>'
 
 
 
 var gBoard
+var gFirstClick = 0
 
 const gLevel = {
     size: 4,
@@ -23,10 +24,11 @@ const gGame = {
 
 
 function onInit() {
+    gFirstClick = 0
     gGame.isOn = true
     gBoard = buildBoard()
     renderBoard(gBoard)
-    randomMines(gBoard, gLevel.mines, gLevel.size)
+
 
 }
 
@@ -85,34 +87,53 @@ function setMinesNegsCount(cellI, cellJ, mat) {
 }
 
 function onCellClicked(cell, i, j) {
-//    var innerHTML = ''
-    if (gBoard[i][j] !== MINE) (
-        gBoard[i][j] = setMinesNegsCount(i, j, gBoard)
-    )
-    // if (gBoard[i][j] === MINE) {
-    //     innerHTML += `<td onclick="onCellClicked(this,${i},${j})" class="cell" ></td>`
-    // }
-   const value = gBoard[i][j]
+
+    cell.classList.add('pushed')
+
+    if (gFirstClick === 0) {
+        randomMines(gBoard, gLevel.mines, gLevel.size, i, j)
+        gFirstClick++
+    }
+
+    const num = setMinesNegsCount(i, j, gBoard)
+
+    if (gBoard[i][j] !== MINE) {
+        if (num !== 0) gBoard[i][j] = num
+        else gBoard[i][j] = ''
+    }
+
+    var value = gBoard[i][j]
 
     renderCell(cell, value)
 }
 
 function renderCell(cell, value) {
-    if(value === MINE){
-    cell.innerHTML = MINE_IMG
-    }else cell.innerText = value
+
+    if (value === MINE) {
+        cell.innerHTML = MINE_IMG
+    } else cell.innerText = value
 }
 
-function randomMines(board, minesNum, level) {
+function randomMines(board, minesNum, level, celli, cellj) {
     for (var i = 0; i < minesNum; i++) {
+
         const i = getRandomInt(0, level)
         const j = getRandomInt(0, level)
+        console.log('i:', i)
+        console.log('j:', j)
+        if (i === celli && j === cellj) {
+            board[i][j] = gBoard[i][j]
+            i--
+        }
         board[i][j] = MINE
+        console.log(board[i][j])
     }
 
 }
 
-
+// function checkIfGameOver(i,j){
+//     if
+// }
 
 
 // function renderBoard(board) {
