@@ -3,6 +3,8 @@
 const EMPTY = ' '
 const MINE = '💣'
 
+const MINE_IMG = '<img src="image/images.png"></img>'
+
 
 
 var gBoard
@@ -24,7 +26,7 @@ function onInit() {
     gGame.isOn = true
     gBoard = buildBoard()
     renderBoard(gBoard)
-    randomMines(gBoard,gLevel.mines,gLevel.size)
+    randomMines(gBoard, gLevel.mines, gLevel.size)
 
 }
 
@@ -83,25 +85,31 @@ function setMinesNegsCount(cellI, cellJ, mat) {
 }
 
 function onCellClicked(cell, i, j) {
+//    var innerHTML = ''
     if (gBoard[i][j] !== MINE) (
         gBoard[i][j] = setMinesNegsCount(i, j, gBoard)
     )
-    const value = gBoard[i][j]
+    // if (gBoard[i][j] === MINE) {
+    //     innerHTML += `<td onclick="onCellClicked(this,${i},${j})" class="cell" ></td>`
+    // }
+   const value = gBoard[i][j]
 
     renderCell(cell, value)
 }
 
 function renderCell(cell, value) {
-    cell.innerText = value
+    if(value === MINE){
+    cell.innerHTML = MINE_IMG
+    }else cell.innerText = value
 }
 
-function randomMines(board,minesNum,level){
-    for(var i =0;i<minesNum;i++){
-        const i = getRandomInt(0,level)
-        const j = getRandomInt(0,level)
+function randomMines(board, minesNum, level) {
+    for (var i = 0; i < minesNum; i++) {
+        const i = getRandomInt(0, level)
+        const j = getRandomInt(0, level)
         board[i][j] = MINE
     }
-    
+
 }
 
 
