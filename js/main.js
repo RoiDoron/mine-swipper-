@@ -29,10 +29,9 @@ var gMineCount
 function onInit() {
     const elSmily = document.querySelector('button.smily')
     elSmily.innerText = '😁'
+    
     gMineCount = gLevel.mines
-    const elModal = document.querySelector('div.modal')
-    elModal.classList.add('hide')
-
+   
     document.querySelector('span.time').innerText = '00'
 
     document.querySelector('span.mines').innerText = gMineCount
@@ -42,7 +41,7 @@ function onInit() {
     gGame.isOn = true
     gBoard = buildBoard()
     renderBoard(gBoard)
-    console.log('gLevel:', gLevel)
+   
 
 
 }
