@@ -30,6 +30,10 @@ function onInit() {
     const elModal = document.querySelector('div.modal')
     elModal.classList.add('hide')
 
+    document.querySelector('span.time').innerText = '00'
+
+    document.querySelector('span.mines').innerText = gMineCount
+
     gLife = 3
     gFirstClick = 0
     gGame.isOn = true
@@ -81,7 +85,6 @@ function renderBoard(board) {
     elContainer.innerHTML = strHTML
 }
 
-
 function setMinesNegsCount(cellI, cellJ, mat) {
     var neighbors = 0
     for (var i = cellI - 1; i <= cellI + 1; i++) {
@@ -104,19 +107,14 @@ function onCellClicked(cell, i, j) {
     cell.classList.add('pushed')
 
     if (gFirstClick === 0) {
+       
         randomMines(gBoard, gLevel.mines, gLevel.size, i, j)
         boardNegsAdd()
+        startTimer()
         gFirstClick++
     }
 
-    // const num = setMinesNegsCount(i, j, gBoard)
-
-
-    // if (gBoard[i][j].cellStatus !== MINE) {
-    //     if (num !== 0) gBoard[i][j].cellStatus = num
-    //     else gBoard[i][j].cellStatus = EMPTY
-    // }
-
+    
     if (gLife !== 0 && gBoard[i][j].cellStatus === MINE) {
         gLife--
 
@@ -127,14 +125,12 @@ function onCellClicked(cell, i, j) {
         elLife.innerText = `${gLife}`
         gBoard[i][j].push = false
     }
-    console.log('gBoard:', gBoard)
-    console.log('i:', i)
-    console.log('j:', j)
+    
     expandShown(gBoard, i, j)
 
     var value = gBoard[i][j].cellStatus
     var push = pushCells()
-    console.log('push:', push)
+    
     renderCell(cell, value)
 
     checkIfGameOver(cell, i, j)
@@ -149,18 +145,18 @@ function renderCell(cell, value) {
 }
 
 function randomMines(board, minesNum, level, celli, cellj) {
+
+var mineOptions = minesOptions()
+
     for (var k = 0; k < minesNum; k++) {
 
-        const i = getRandomInt(0, level)
-        const j = getRandomInt(0, level)
-        console.log('i:', i)
-        console.log('j:', j)
-        if (i === celli && j === cellj) {
-            board[i][j].cellStatus = gBoard[i][j].cellStatus
+       const num = drawNum(drawNum(mineOptions))
+       
+        if (num.i === celli && num.j === cellj) {
+            board[num.i][num.j].cellStatus = EMPTY
             k--
-        }
-        board[i][j].cellStatus = MINE
-        console.log(board[i][j])
+        }else board[num.i][num.j].cellStatus = MINE
+       
     }
 
 }
@@ -171,6 +167,8 @@ function checkIfGameOver(cell, i, j) {
     if (gBoard[i][j].cellStatus === MINE) {
         gGame.isOn = false
 
+        clearInterval(gTimerInterval)
+        
         elModal.querySelector('.user-msg').innerText = 'GAME-OVER'
         elModal.classList.remove('hide')
 
@@ -184,6 +182,8 @@ function checkIfVictory(push) {
     if (gFlagCount === gLevel.mines && push === 2 ** (gLevel.size) - gLevel.mines) {
         gGame.isOn = false
 
+        clearInterval(gTimerInterval)
+
         elModal.querySelector('.user-msg').innerText = 'YOU-WON'
         elModal.classList.remove('hide')
 
@@ -194,21 +194,19 @@ function checkIfVictory(push) {
 function onCellMarked(cell, i, j) {
     if (gBoard[i][j].cellFlag === true) {
         gFlagCount--
+        gMineCount--
         gBoard[i][j].cellFlag = false
         cell.innerHTML = ''
+        document.querySelector('span.mines').innerText = gMineCount
     } else {
         gFlagCount++
         gBoard[i][j].cellFlag = true
         cell.innerHTML = FLAG_IMG
         gMineCount--
+        document.querySelector('span.mines').innerText = gMineCount
+       
     }
 }
-
-window.oncontextmenu = (e) => {
-    e.preventDefault()
-
-}
-
 
 function pushCells() {
     var pushNum = 0
@@ -229,8 +227,7 @@ function expandShown(board, cellI, cellJ) {
                 var currValue = board[i][j].cellStatus
                 board[i][j].push = true
                 const elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`)
-                console.log('i:', i)
-                console.log('currValue:', currValue)
+                
                 elCell.classList.add('pushed')
                 elCell.innerText = currValue
             }
@@ -248,4 +245,23 @@ function boardNegsAdd() {
             }
         }
     }
+}
+
+window.oncontextmenu = (e) => {
+    e.preventDefault()
+
+}
+
+
+function minesOptions(){
+    var mineOptions = []
+    for(var i =0 ;i<gLevel.size;i++){
+        mineOptions.push([])
+        for(var j =0 ;j<gLevel.size;j++){
+            mineOptions[i][j]={
+                i,
+                j
+            }
+        }
+    }return mineOptions
 }
