@@ -29,7 +29,7 @@ var gMineCount = gLevel.mines
 function onInit() {
     const elModal = document.querySelector('div.modal')
     elModal.classList.add('hide')
-    
+
     gLife = 3
     gFirstClick = 0
     gGame.isOn = true
@@ -72,7 +72,7 @@ function renderBoard(board) {
             const cell = board[i][j].cellStatus
             const className = `cell`
 
-            strHTML += `<td onclick="onCellClicked(this,${i},${j})" oncontextmenu="onCellMarked(this,${i},${j})" class="${className}"></td>`
+            strHTML += `<td data-i="${i}" data-j="${j}" onclick="onCellClicked(this,${i},${j})" oncontextmenu="onCellMarked(this,${i},${j})" class="${className}"></td>`
         }
 
         strHTML += '</tr>'
@@ -91,7 +91,7 @@ function setMinesNegsCount(cellI, cellJ, mat) {
             if (j < 0 || j >= mat[i].length) continue
             if (mat[i][j].cellStatus === MINE) neighbors++
         }
-    } console.log('mat:', mat)
+    }
     return neighbors
 
 }
@@ -105,20 +105,21 @@ function onCellClicked(cell, i, j) {
 
     if (gFirstClick === 0) {
         randomMines(gBoard, gLevel.mines, gLevel.size, i, j)
+        boardNegsAdd()
         gFirstClick++
     }
 
-    const num = setMinesNegsCount(i, j, gBoard)
+    // const num = setMinesNegsCount(i, j, gBoard)
 
 
-    if (gBoard[i][j].cellStatus !== MINE) {
-        if (num !== 0) gBoard[i][j].cellStatus = num
-        else gBoard[i][j].cellStatus = ''
-    }
+    // if (gBoard[i][j].cellStatus !== MINE) {
+    //     if (num !== 0) gBoard[i][j].cellStatus = num
+    //     else gBoard[i][j].cellStatus = EMPTY
+    // }
 
     if (gLife !== 0 && gBoard[i][j].cellStatus === MINE) {
         gLife--
-       
+
         renderCell(cell, value)
         setTimeout(renderCell, 500, cell, '')
         setTimeout(() => cell.classList.remove('pushed'), 500)
@@ -126,7 +127,10 @@ function onCellClicked(cell, i, j) {
         elLife.innerText = `${gLife}`
         gBoard[i][j].push = false
     }
-    
+    console.log('gBoard:', gBoard)
+    console.log('i:', i)
+    console.log('j:', j)
+    expandShown(gBoard, i, j)
 
     var value = gBoard[i][j].cellStatus
     var push = pushCells()
@@ -176,7 +180,7 @@ function checkIfGameOver(cell, i, j) {
 
 function checkIfVictory(push) {
     const elModal = document.querySelector('div.modal')
-    
+
     if (gFlagCount === gLevel.mines && push === 2 ** (gLevel.size) - gLevel.mines) {
         gGame.isOn = false
 
@@ -213,4 +217,57 @@ function pushCells() {
             if (gBoard[i][j].push) pushNum++
         }
     } return pushNum
+}
+
+function expandShown(board, cellI, cellJ) {
+    if (board[cellI][cellJ].cellStatus === EMPTY) {
+        for (var i = cellI - 1; i <= cellI + 1; i++) {
+            if (i < 0 || i >= board.length) continue
+            for (var j = cellJ - 1; j <= cellJ + 1; j++) {
+                if (i === cellI && j === cellJ) continue
+                if (j < 0 || j >= board[i].length) continue
+                var currValue = board[i][j].cellStatus
+                board[i][j].push = true
+                const elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`)
+                console.log('i:', i)
+                console.log('currValue:', currValue)
+                elCell.classList.add('pushed')
+                elCell.innerText = currValue
+            }
+        }
+    }
+}
+
+
+function highlightAvailableSeatsAround(board, rowIdx, colIdx) {
+    console.log('rowIdx:', rowIdx, 'colIdx:', colIdx)
+    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+        if (i < 0 || i >= board.length) continue
+        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+            if (i === rowIdx && j === colIdx) continue
+            if (j < 0 || j >= board[0].length) continue
+            var currCell = board[i][j]
+            console.log('currCell:', currCell)
+            if (currCell.isSeat && !currCell.isBooked) {
+
+                const elNeigh = document.querySelector(`[data-i="${i}"][data-j="${j}"]`)
+                console.log('elNeigh:', elNeigh)
+                elNeigh.classList.add('highlight')
+                setTimeout(() => { elNeigh.classList.remove('highlight') }, 2500)
+            }
+        }
+    }
+}
+
+
+function boardNegsAdd() {
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[0].length; j++) {
+            if (gBoard[i][j].cellStatus !== MINE) {
+                const num = setMinesNegsCount(i, j, gBoard)
+                if (num !== 0) gBoard[i][j].cellStatus = num
+                else gBoard[i][j].cellStatus = EMPTY
+            }
+        }
+    }
 }
