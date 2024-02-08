@@ -238,28 +238,6 @@ function expandShown(board, cellI, cellJ) {
     }
 }
 
-
-function highlightAvailableSeatsAround(board, rowIdx, colIdx) {
-    console.log('rowIdx:', rowIdx, 'colIdx:', colIdx)
-    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
-        if (i < 0 || i >= board.length) continue
-        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
-            if (i === rowIdx && j === colIdx) continue
-            if (j < 0 || j >= board[0].length) continue
-            var currCell = board[i][j]
-            console.log('currCell:', currCell)
-            if (currCell.isSeat && !currCell.isBooked) {
-
-                const elNeigh = document.querySelector(`[data-i="${i}"][data-j="${j}"]`)
-                console.log('elNeigh:', elNeigh)
-                elNeigh.classList.add('highlight')
-                setTimeout(() => { elNeigh.classList.remove('highlight') }, 2500)
-            }
-        }
-    }
-}
-
-
 function boardNegsAdd() {
     for (var i = 0; i < gBoard.length; i++) {
         for (var j = 0; j < gBoard[0].length; j++) {
