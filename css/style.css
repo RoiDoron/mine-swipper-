@@ -39,3 +39,21 @@ img{
     background-color: rgb(104, 100, 95);
 }
 
+.modal {
+    background-color:rgb(182, 179, 174);
+    border: 5px solid rgb(182, 179, 174);
+    width: 300px;
+    padding: 20px;
+    position: absolute;
+    top: 400px;
+    left: calc(50% - 175px);
+    color: black;
+  }
+  
+  .hide {
+    display: none;
+  }
+  
+  .lose{
+    background-color: red;
+  }
