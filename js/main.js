@@ -39,6 +39,7 @@ function onInit() {
     gGame.isOn = true
     gBoard = buildBoard()
     renderBoard(gBoard)
+    console.log('gLevel:', gLevel)
 
 
 }
@@ -107,14 +108,14 @@ function onCellClicked(cell, i, j) {
     cell.classList.add('pushed')
 
     if (gFirstClick === 0) {
-       
+
         randomMines(gBoard, gLevel.mines, gLevel.size, i, j)
         boardNegsAdd()
         startTimer()
         gFirstClick++
     }
 
-    
+
     if (gLife !== 0 && gBoard[i][j].cellStatus === MINE) {
         gLife--
 
@@ -125,12 +126,12 @@ function onCellClicked(cell, i, j) {
         elLife.innerText = `${gLife}`
         gBoard[i][j].push = false
     }
-    
+
     expandShown(gBoard, i, j)
 
     var value = gBoard[i][j].cellStatus
     var push = pushCells()
-    
+
     renderCell(cell, value)
 
     checkIfGameOver(cell, i, j)
@@ -146,17 +147,18 @@ function renderCell(cell, value) {
 
 function randomMines(board, minesNum, level, celli, cellj) {
 
-var mineOptions = minesOptions()
-
+    var mineOptions = minesOptions()
+    console.log('mineOptions:', mineOptions)
     for (var k = 0; k < minesNum; k++) {
 
-       const num = drawNum(drawNum(mineOptions))
-       
+        const num = drawNum(mineOptions)
+        
+        
         if (num.i === celli && num.j === cellj) {
             board[num.i][num.j].cellStatus = EMPTY
             k--
-        }else board[num.i][num.j].cellStatus = MINE
-       
+        } else board[num.i][num.j].cellStatus = MINE
+
     }
 
 }
@@ -168,7 +170,7 @@ function checkIfGameOver(cell, i, j) {
         gGame.isOn = false
 
         clearInterval(gTimerInterval)
-        
+
         elModal.querySelector('.user-msg').innerText = 'GAME-OVER'
         elModal.classList.remove('hide')
 
@@ -204,7 +206,7 @@ function onCellMarked(cell, i, j) {
         cell.innerHTML = FLAG_IMG
         gMineCount--
         document.querySelector('span.mines').innerText = gMineCount
-       
+
     }
 }
 
@@ -227,7 +229,7 @@ function expandShown(board, cellI, cellJ) {
                 var currValue = board[i][j].cellStatus
                 board[i][j].push = true
                 const elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`)
-                
+
                 elCell.classList.add('pushed')
                 elCell.innerText = currValue
             }
@@ -253,15 +255,26 @@ window.oncontextmenu = (e) => {
 }
 
 
-function minesOptions(){
+function minesOptions() {
     var mineOptions = []
-    for(var i =0 ;i<gLevel.size;i++){
-        mineOptions.push([])
-        for(var j =0 ;j<gLevel.size;j++){
-            mineOptions[i][j]={
+    for (var i = 0; i < gLevel.size; i++) {
+        
+        for (var j = 0; j < gLevel.size; j++) {
+            mineOptions.push( {
                 i,
                 j
-            }
+            })
         }
-    }return mineOptions
+    } return mineOptions
+}
+
+function onLevel(btn) {
+    const data = +btn.dataset.num
+    gLevel.size = data
+    if (data === 4) gLevel.mines = 2
+    if (data === 8) gLevel.mines = 14
+    if (data === 12) gLevel.mines = 32
+    console.log('gLevel:', gLevel)
+    onInit()
+
 }
