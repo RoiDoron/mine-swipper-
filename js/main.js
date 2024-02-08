@@ -24,9 +24,11 @@ var gLife = 3
 var gFlagCount = 0
 var gBoard
 var gFirstClick = 0
-var gMineCount = gLevel.mines
+var gMineCount 
 
 function onInit() {
+
+    gMineCount = gLevel.mines
     const elModal = document.querySelector('div.modal')
     elModal.classList.add('hide')
 
