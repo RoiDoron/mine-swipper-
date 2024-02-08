@@ -24,10 +24,11 @@ var gLife = 3
 var gFlagCount = 0
 var gBoard
 var gFirstClick = 0
-var gMineCount 
+var gMineCount
 
 function onInit() {
-
+    const elSmily = document.querySelector('button.smily')
+    elSmily.innerText = '😁'
     gMineCount = gLevel.mines
     const elModal = document.querySelector('div.modal')
     elModal.classList.add('hide')
@@ -150,12 +151,12 @@ function renderCell(cell, value) {
 function randomMines(board, minesNum, level, celli, cellj) {
 
     var mineOptions = minesOptions()
-    console.log('mineOptions:', mineOptions)
+   
     for (var k = 0; k < minesNum; k++) {
 
         const num = drawNum(mineOptions)
-        
-        
+
+
         if (num.i === celli && num.j === cellj) {
             board[num.i][num.j].cellStatus = EMPTY
             k--
@@ -167,29 +168,30 @@ function randomMines(board, minesNum, level, celli, cellj) {
 
 function checkIfGameOver(cell, i, j) {
     if (gLife) return
-    const elModal = document.querySelector('div.modal')
+   
+    const elSmily = document.querySelector('button.smily')
     if (gBoard[i][j].cellStatus === MINE) {
         gGame.isOn = false
 
         clearInterval(gTimerInterval)
 
-        elModal.querySelector('.user-msg').innerText = 'GAME-OVER'
-        elModal.classList.remove('hide')
-
-        cell.classList.add('lose')
+        
+        elSmily.innerText = '🤯'
+       
     } else return
 }
 
 function checkIfVictory(push) {
-    const elModal = document.querySelector('div.modal')
+    
+    const elSmily = document.querySelector('button.smily')
 
     if (gFlagCount === gLevel.mines && push === 2 ** (gLevel.size) - gLevel.mines) {
         gGame.isOn = false
 
         clearInterval(gTimerInterval)
 
-        elModal.querySelector('.user-msg').innerText = 'YOU-WON'
-        elModal.classList.remove('hide')
+        
+        elSmily.innerText = '😎'
 
     }
 
@@ -256,13 +258,12 @@ window.oncontextmenu = (e) => {
 
 }
 
-
 function minesOptions() {
     var mineOptions = []
     for (var i = 0; i < gLevel.size; i++) {
-        
+
         for (var j = 0; j < gLevel.size; j++) {
-            mineOptions.push( {
+            mineOptions.push({
                 i,
                 j
             })
@@ -276,7 +277,7 @@ function onLevel(btn) {
     if (data === 4) gLevel.mines = 2
     if (data === 8) gLevel.mines = 14
     if (data === 12) gLevel.mines = 32
-    console.log('gLevel:', gLevel)
+   
     onInit()
 
 }
