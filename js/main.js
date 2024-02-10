@@ -47,6 +47,7 @@ function onInit() {
 
     gSeconds = 0
     gLife = 3
+document.querySelector('span.life').innerText=gLife
     gFirstClick = 0
     gGame.isOn = true
     gBoard = buildBoard()
