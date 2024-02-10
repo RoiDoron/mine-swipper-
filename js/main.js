@@ -8,8 +8,6 @@ const MINE_IMG = '<img src="image/images.png"></img>'
 const LIFE = '❤️'
 const LIFE_LOST = '💔'
 
-
-
 const gLevel = {
     size: 4,
     mines: 2,
@@ -23,7 +21,6 @@ const gGame = {
     secsPassed: 0
 }
 
-const elScore = document.querySelector('h2 span.score')
 var push = 0
 var gSeconds = 0
 var gLife = 3
@@ -34,10 +31,11 @@ var gMineCount
 
 function onInit() {
     clearInterval(gTimerInterval)
-
+    
     const elSmily = document.querySelector('button.smily')
     elSmily.innerText = '😁'
-
+    
+    const elScore = document.querySelector('h2 span.score')
     elScore.innerText = localStorage.getItem(`highScore${gLevel.size}`)
 
 
