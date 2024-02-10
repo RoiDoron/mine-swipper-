@@ -251,11 +251,13 @@ function expandShown(board, cellI, cellJ) {
                 if (i === cellI && j === cellJ) continue
                 if (j < 0 || j >= board[i].length) continue
                 var currValue = board[i][j].cellStatus
+                if(board[i][j].push)continue
                 board[i][j].push = true
                 const elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`)
 
                 elCell.classList.add('pushed')
                 elCell.innerText = currValue
+                if(gBoard[i][j].cellStatus===EMPTY)expandShown(board,i,j)
             }
         }
     }
