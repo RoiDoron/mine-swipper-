@@ -5,6 +5,8 @@ const MINE = 'MINE'
 const FLAG = 'FLAG'
 const FLAG_IMG = '<img src="image/image1.png"></img>'
 const MINE_IMG = '<img src="image/images.png"></img>'
+const LIFE = '❤️'
+const LIFE_LOST = '💔'
 
 
 
@@ -47,7 +49,10 @@ function onInit() {
 
     gSeconds = 0
     gLife = 3
-document.querySelector('span.life').innerText=gLife
+    document.querySelector('span.life1').innerText = LIFE
+    document.querySelector('span.life2').innerText = LIFE
+    document.querySelector('span.life3').innerText = LIFE
+
     gFirstClick = 0
     gGame.isOn = true
     gBoard = buildBoard()
@@ -119,7 +124,7 @@ function onCellClicked(cell, i, j) {
     if (!gGame.isOn) return
     const elSmily = document.querySelector('button.smily')
     elSmily.innerText = '😯'
-    setTimeout( ()=>(gGame.isOn) ? elSmily.innerText = '😁':null , 100)
+    setTimeout(() => (gGame.isOn) ? elSmily.innerText = '😁' : null, 100)
     gBoard[i][j].push = true
 
     cell.classList.add('pushed')
@@ -153,11 +158,14 @@ function onCellClicked(cell, i, j) {
         gLife--
 
         renderCell(cell, value)
+
         setTimeout(renderCell, 500, cell, '')
         setTimeout(() => cell.classList.remove('pushed'), 500)
-        var elLife = document.querySelector('.life')
-        elLife.innerText = `${gLife}`
         gBoard[i][j].push = false
+
+        if (gLife === 2) document.querySelector('span.life1').innerText = LIFE_LOST
+        if (gLife === 1) document.querySelector('span.life2').innerText = LIFE_LOST
+        if (gLife === 0) document.querySelector('span.life3').innerText = LIFE_LOST
     }
 }
 
