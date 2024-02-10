@@ -29,9 +29,9 @@ var gMineCount
 function onInit() {
     const elSmily = document.querySelector('button.smily')
     elSmily.innerText = '😁'
-    
+
     gMineCount = gLevel.mines
-   
+
     document.querySelector('span.time').innerText = '00'
 
     document.querySelector('span.mines').innerText = gMineCount
@@ -41,7 +41,7 @@ function onInit() {
     gGame.isOn = true
     gBoard = buildBoard()
     renderBoard(gBoard)
-   
+
 
 
 }
@@ -104,6 +104,7 @@ function setMinesNegsCount(cellI, cellJ, mat) {
 
 function onCellClicked(cell, i, j) {
     if (gBoard[i][j].cellFlag) return
+    if(!gGame.isOn) return
 
     gBoard[i][j].push = true
 
@@ -150,7 +151,7 @@ function renderCell(cell, value) {
 function randomMines(board, minesNum, level, celli, cellj) {
 
     var mineOptions = minesOptions()
-   
+
     for (var k = 0; k < minesNum; k++) {
 
         const num = drawNum(mineOptions)
@@ -167,21 +168,21 @@ function randomMines(board, minesNum, level, celli, cellj) {
 
 function checkIfGameOver(cell, i, j) {
     if (gLife) return
-   
+
     const elSmily = document.querySelector('button.smily')
     if (gBoard[i][j].cellStatus === MINE) {
         gGame.isOn = false
 
         clearInterval(gTimerInterval)
 
-        
+
         elSmily.innerText = '🤯'
-       
+
     } else return
 }
 
 function checkIfVictory(push) {
-    
+
     const elSmily = document.querySelector('button.smily')
 
     if (gFlagCount === gLevel.mines && push === 2 ** (gLevel.size) - gLevel.mines) {
@@ -189,7 +190,7 @@ function checkIfVictory(push) {
 
         clearInterval(gTimerInterval)
 
-        
+
         elSmily.innerText = '😎'
 
     }
@@ -276,7 +277,7 @@ function onLevel(btn) {
     if (data === 4) gLevel.mines = 2
     if (data === 8) gLevel.mines = 14
     if (data === 12) gLevel.mines = 32
-   
+
     onInit()
 
 }
