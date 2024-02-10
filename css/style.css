@@ -1,46 +1,50 @@
 body {
+    background-image: url("../image/background\ \(2\).jpg");
     background-color: rgb(39, 46, 80);
-    color:white;
+    color: #4D2D18;
     text-align: center;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 
 }
 
-table{
-    border: 5px solid rgb(182, 179, 174);
-}
-.board-container{
-    margin-left: auto;
-    margin-right: auto;
-   
+table {
+    border: 5px solid #8A6240;
+    margin-bottom: 10px;
 }
 
-    
+.board-container {
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+
 td {
-    color: black;
+    color: antiquewhite;
     width: 35px;
     height: 35px;
     text-align: center;
     font-size: auto;
-    background-color: rgb(182, 179, 174);
+    background-color: #8A6240;
     cursor: pointer;
-    
+
 
 }
 
-td:hover{
-    background-color:  rgb(219, 217, 213);
+td:hover {
+    background-color: #CABA9C;
 }
-img{
+
+img {
     width: 30px;
 }
 
-.pushed{
-    background-color: rgb(104, 100, 95);
+.pushed {
+    background-color: #4D2D18;
 }
 
 .modal {
-    background-color:rgb(182, 179, 174);
+    background-color: rgb(182, 179, 174);
     border: 5px solid rgb(182, 179, 174);
     width: 300px;
     padding: 20px;
@@ -48,18 +52,37 @@ img{
     top: 400px;
     left: calc(50% - 175px);
     color: black;
-  }
-  
-  .hide {
-    display: none;
-  }
-  
-  .lose{
-    background-color: red;
-  }
+}
 
-  button{
+.hide {
+    display: none;
+}
+
+.lose {
+    background-color: red;
+}
+
+button {
     padding: 10px;
     margin: 10px;
-    
-  }
+    border: none;
+    color: antiquewhite;
+}
+
+.smily {
+    font-size: 30px;
+    background-color: rgba(255, 0, 0, 0);
+
+}
+
+button.easy {
+    background-color: #58744f;
+}
+
+button.medium {
+    background-color: #4D2D18;
+}
+
+button.hard {
+    background-color: #c30101;
+}

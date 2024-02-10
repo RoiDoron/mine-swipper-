@@ -38,7 +38,6 @@ function onInit() {
 
     elScore.innerText = localStorage.getItem(`highScore${gLevel.size}`)
 
-    console.log(':', localStorage.getItem(`highScore${gLevel.size}`))
 
     gMineCount = gLevel.mines
 
@@ -53,7 +52,7 @@ function onInit() {
     gBoard = buildBoard()
     renderBoard(gBoard)
 
-    console.log('gLevel:', gLevel)
+
 
 
 }
@@ -117,7 +116,9 @@ function setMinesNegsCount(cellI, cellJ, mat) {
 function onCellClicked(cell, i, j) {
     if (gBoard[i][j].cellFlag) return
     if (!gGame.isOn) return
-
+    const elSmily = document.querySelector('button.smily')
+    elSmily.innerText = '😯'
+    setTimeout( ()=>(gGame.isOn) ? elSmily.innerText = '😁':null , 100)
     gBoard[i][j].push = true
 
     cell.classList.add('pushed')
@@ -128,20 +129,21 @@ function onCellClicked(cell, i, j) {
         boardNegsAdd()
         startTimer()
         gFirstClick++
-        console.log('gBoard:', gBoard)
+
     }
 
 
-    
+
     expandShown(gBoard, i, j)
-    
+
     var value = gBoard[i][j].cellStatus
     push = pushCells()
-    
-    console.log('push:', push)
-    
+
+
+
     renderCell(cell, value)
-    
+
+
     checkIfGameOver(cell, i, j)
 
     checkIfVictory(push)
@@ -192,7 +194,7 @@ function checkIfGameOver(cell, i, j) {
 
         clearInterval(gTimerInterval)
 
-cell.classList.add('lose')
+        cell.classList.add('lose')
         elSmily.innerText = '🤯'
 
     } else return
@@ -200,12 +202,12 @@ cell.classList.add('lose')
 
 function checkIfVictory(push) {
 
-    
+
     if (gMineCount === 0 && push === gLevel.push) {
         gGame.isOn = false
-        
+
         clearInterval(gTimerInterval)
-        
+
         const elSmily = document.querySelector('button.smily')
 
         elSmily.innerText = '😎'
@@ -216,7 +218,7 @@ function checkIfVictory(push) {
 }
 
 function onCellMarked(cell, i, j) {
-    if(gBoard[i][j].push)return
+    if (gBoard[i][j].push) return
     if (gBoard[i][j].cellFlag === true) {
         gFlagCount--
         gMineCount++
@@ -251,13 +253,13 @@ function expandShown(board, cellI, cellJ) {
                 if (i === cellI && j === cellJ) continue
                 if (j < 0 || j >= board[i].length) continue
                 var currValue = board[i][j].cellStatus
-                if(board[i][j].push)continue
+                if (board[i][j].push) continue
                 board[i][j].push = true
                 const elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`)
 
                 elCell.classList.add('pushed')
                 elCell.innerText = currValue
-                if(gBoard[i][j].cellStatus===EMPTY)expandShown(board,i,j)
+                if (gBoard[i][j].cellStatus === EMPTY) expandShown(board, i, j)
             }
         }
     }
@@ -297,16 +299,16 @@ function onLevel(btn) {
     const data = +btn.dataset.num
     gLevel.size = data
     if (data === 4) {
-        gLevel.mines = 2 
+        gLevel.mines = 2
         gLevel.push = 14
     }
-    if (data === 8){
-         gLevel.mines = 14
-         gLevel.push = 50
+    if (data === 8) {
+        gLevel.mines = 14
+        gLevel.push = 50
     }
-    if (data === 12){
-         gLevel.mines = 32
-         gLevel.push = 112
+    if (data === 12) {
+        gLevel.mines = 32
+        gLevel.push = 112
     }
 
     onInit()
