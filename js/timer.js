@@ -10,7 +10,7 @@ function startTimer() {
         const seconds = getFormatSeconds(timeDiff)
 
         document.querySelector('span.time').innerText = seconds
-
+        gSeconds = seconds
 
     }, 10)
 }

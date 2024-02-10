@@ -10,7 +10,8 @@ const MINE_IMG = '<img src="image/images.png"></img>'
 
 const gLevel = {
     size: 4,
-    mines: 2
+    mines: 2,
+    push: 14
 }
 
 const gGame = {
@@ -20,6 +21,9 @@ const gGame = {
     secsPassed: 0
 }
 
+const elScore = document.querySelector('h2 span.score')
+var push = 0
+var gSeconds = 0
 var gLife = 3
 var gFlagCount = 0
 var gBoard
@@ -27,8 +31,14 @@ var gFirstClick = 0
 var gMineCount
 
 function onInit() {
+    clearInterval(gTimerInterval)
+
     const elSmily = document.querySelector('button.smily')
     elSmily.innerText = '😁'
+
+    elScore.innerText = localStorage.getItem(`highScore${gLevel.size}`)
+
+    console.log(':', localStorage.getItem(`highScore${gLevel.size}`))
 
     gMineCount = gLevel.mines
 
@@ -36,12 +46,14 @@ function onInit() {
 
     document.querySelector('span.mines').innerText = gMineCount
 
+    gSeconds = 0
     gLife = 3
     gFirstClick = 0
     gGame.isOn = true
     gBoard = buildBoard()
     renderBoard(gBoard)
 
+    console.log('gLevel:', gLevel)
 
 
 }
@@ -104,7 +116,7 @@ function setMinesNegsCount(cellI, cellJ, mat) {
 
 function onCellClicked(cell, i, j) {
     if (gBoard[i][j].cellFlag) return
-    if(!gGame.isOn) return
+    if (!gGame.isOn) return
 
     gBoard[i][j].push = true
 
@@ -116,10 +128,25 @@ function onCellClicked(cell, i, j) {
         boardNegsAdd()
         startTimer()
         gFirstClick++
+        console.log('gBoard:', gBoard)
     }
 
 
-    if (gLife !== 0 && gBoard[i][j].cellStatus === MINE) {
+    
+    expandShown(gBoard, i, j)
+    
+    var value = gBoard[i][j].cellStatus
+    push = pushCells()
+    
+    console.log('push:', push)
+    
+    renderCell(cell, value)
+    
+    checkIfGameOver(cell, i, j)
+
+    checkIfVictory(push)
+
+    if (gLife > 0 && gBoard[i][j].cellStatus === MINE) {
         gLife--
 
         renderCell(cell, value)
@@ -129,16 +156,6 @@ function onCellClicked(cell, i, j) {
         elLife.innerText = `${gLife}`
         gBoard[i][j].push = false
     }
-
-    expandShown(gBoard, i, j)
-
-    var value = gBoard[i][j].cellStatus
-    var push = pushCells()
-
-    renderCell(cell, value)
-
-    checkIfGameOver(cell, i, j)
-    checkIfVictory(push)
 }
 
 function renderCell(cell, value) {
@@ -175,7 +192,7 @@ function checkIfGameOver(cell, i, j) {
 
         clearInterval(gTimerInterval)
 
-
+cell.classList.add('lose')
         elSmily.innerText = '🤯'
 
     } else return
@@ -183,24 +200,26 @@ function checkIfGameOver(cell, i, j) {
 
 function checkIfVictory(push) {
 
-    const elSmily = document.querySelector('button.smily')
-
-    if (gFlagCount === gLevel.mines && push === 2 ** (gLevel.size) - gLevel.mines) {
+    
+    if (gMineCount === 0 && push === gLevel.push) {
         gGame.isOn = false
-
+        
         clearInterval(gTimerInterval)
-
+        
+        const elSmily = document.querySelector('button.smily')
 
         elSmily.innerText = '😎'
+        hightScore()
 
     }
 
 }
 
 function onCellMarked(cell, i, j) {
+    if(gBoard[i][j].push)return
     if (gBoard[i][j].cellFlag === true) {
         gFlagCount--
-        gMineCount--
+        gMineCount++
         gBoard[i][j].cellFlag = false
         cell.innerHTML = ''
         document.querySelector('span.mines').innerText = gMineCount
@@ -210,6 +229,7 @@ function onCellMarked(cell, i, j) {
         cell.innerHTML = FLAG_IMG
         gMineCount--
         document.querySelector('span.mines').innerText = gMineCount
+        checkIfVictory(push)
 
     }
 }
@@ -274,10 +294,47 @@ function minesOptions() {
 function onLevel(btn) {
     const data = +btn.dataset.num
     gLevel.size = data
-    if (data === 4) gLevel.mines = 2
-    if (data === 8) gLevel.mines = 14
-    if (data === 12) gLevel.mines = 32
+    if (data === 4) {
+        gLevel.mines = 2 
+        gLevel.push = 14
+    }
+    if (data === 8){
+         gLevel.mines = 14
+         gLevel.push = 50
+    }
+    if (data === 12){
+         gLevel.mines = 32
+         gLevel.push = 112
+    }
 
     onInit()
 
+}
+
+function hightScore() {
+    if (typeof (Storage) !== undefined) {
+        if (gLevel.size === 4) {
+
+            if (!localStorage.getItem('highScore4') || localStorage.getItem('highScore4') > gSeconds) {
+                return localStorage.setItem('highScore4', gSeconds)
+            } return
+
+        }
+
+        if (gLevel.size === 8) {
+
+            if (!localStorage.getItem('highScore8') || localStorage.getItem('highScore8') > gSeconds) {
+                return localStorage.setItem('highScore8', gSeconds)
+            } return
+
+        }
+
+        if (gLevel.size === 12) {
+
+            if (!localStorage.getItem('highScore12') || localStorage.getItem('highScore12') > gSeconds) {
+                return localStorage.setItem('highScore12', gSeconds)
+            } return
+
+        }
+    } return
 }
